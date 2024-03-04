@@ -32,8 +32,8 @@ function save_fr()
             for reach = 1:size(session.Data.reach_num, 1)
 
                 % Saving trial/reach averaged activity
-                cur_spike_times = session.Data.neural_data_M1{reach}(neuron, :) / 0.01;
-                filtered_spike_times = smooth(cur_spike_times, 10);
+                cur_spike_times = session.Data.neural_data_M1{reach}(neuron, :);
+                filtered_spike_times = 100*filterGauss(cur_spike_times, 10);
                 session.Data.neural_data_M1{reach}(neuron, :) = filtered_spike_times.';
             
             end
@@ -48,8 +48,8 @@ function save_fr()
 
                 % Not implementing different conditions yet
                 % Saving trial/reach averaged activity
-                cur_spike_times = session.Data.neural_data_PMd{reach}(neuron, :) / 0.01;
-                filtered_spike_times = smooth(cur_spike_times, 10);
+                cur_spike_times = session.Data.neural_data_PMd{reach}(neuron, :);
+                filtered_spike_times = 100*filterGauss(cur_spike_times, 10);
                 session.Data.neural_data_PMd{reach}(neuron, :) = filtered_spike_times.';
             
             end
@@ -67,6 +67,11 @@ function save_fr()
         reach_dir = session.Data.reach_dir;
         target_on = session.Data.target_on;
         PMd_population = session.Data.neural_data_PMd;
+
+        if i == 1
+            M1_population = session.Data.neural_data_M1;
+            save(save_names(i) + "M1_fr.mat", "M1_population")
+        end
         
         save(save_names(i) + "PMd_fr.mat", "PMd_population")
         save(save_names(i) + "cue_on.mat", "cue_on")
